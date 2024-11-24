@@ -1,100 +1,121 @@
-# Image Denoising Project README
+# Proyecto de Reducción de Ruido en Imágenes (Image Denoising)
 
-## **Introduction**
-This project focuses on image denoising using numerical optimization techniques. The method leverages sparse matrices and a regularized inversion approach to minimize noise in grayscale images. Additionally, the project includes tools for noise evaluation using metrics such as Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index (SSIM).
+## **Introducción**
 
-## **How It Works**
-The process involves the following key steps:
+Este proyecto se centra en la reducción de ruido en imágenes mediante técnicas de optimización numérica. El método utiliza matrices dispersas y un enfoque de inversión regularizada para minimizar el ruido en imágenes en escala de grises. Además, incluye herramientas para evaluar el ruido utilizando métricas como la Relación Señal-Ruido de Pico (**PSNR**, por sus siglas en inglés) y el Índice de Similitud Estructural (**SSIM**, por sus siglas en inglés).
 
-1. **Adding Noise to an Image**: Gaussian noise is artificially introduced to simulate noisy images.
-2. **Noise Reduction (Denoising)**:
-   - A regularization-based approach is used to solve a sparse system of linear equations.
-   - Horizontal and vertical difference matrices are constructed to enforce smoothness in the image.
-   - A conjugate gradient solver (`scipy.sparse.linalg.cg`) efficiently computes the denoised image.
-3. **Quality Evaluation**: Metrics like PSNR and SSIM are used to compare the original and denoised images, providing objective measures of the denoising performance.
+El proyecto combina teoría matemática y computación aplicada, ofreciendo una solución práctica al problema del ruido en imágenes digitales.
 
-## **Theoretical Background**
-1. **Noise in Images**:
-   - Digital images often suffer from noise due to various factors like sensor imperfections, low light, or transmission errors.
-   - Gaussian noise, characterized by its bell-curve distribution, is a common type of noise.
+## **Relación Teórica**
 
-2. **Regularized Denoising**:
-   - Denoising is formulated as an optimization problem:
+El ruido en las imágenes es un problema común, especialmente en condiciones como baja iluminación, sensores electrónicos imperfectos o errores en la transmisión de datos. En este proyecto, el ruido gaussiano se utiliza como modelo para simular este fenómeno. Este tipo de ruido sigue una distribución normal (campana de Gauss), que es ampliamente utilizada para modelar ruido en imágenes reales debido a su relevancia práctica.
 
-    $$
-     \text{minimize} \quad \| I_{\text{noisy}} - I_{\text{denoised}} \|^2 + \lambda \| D_h I + D_v I \|^2
-      $$
+### **Fundamentos del Proyecto**
 
-   where:
-   - `I_noisy` is the noisy image.
-   - `I_denoised` is the denoised image.
-   - `D_h` and `D_v` are horizontal and vertical difference matrices.
-   - `λ` (lambda) is the regularization parameter.
+1. **Ruido en Imágenes**:
+   - El ruido gaussiano introduce pequeñas variaciones aleatorias en los valores de intensidad de los píxeles.
+   - Su naturaleza estadística sigue una distribución normal, definida por una media $(\mu)$ y una desviación estándar $(\sigma)$.
+   - Este tipo de ruido degrada la calidad visual y afecta tareas como segmentación y análisis.
 
+2. **Reducción de Ruido Regularizada**:
+   - La reducción de ruido se formula como un problema de optimización matemática, donde se busca encontrar una imagen suavizada minimizando una función objetivo que equilibra la fidelidad a la imagen original y la suavidad:
 
-3. **Sparse Matrices**:
-   - Sparse matrices efficiently represent operations like finite differences, reducing memory usage and computational cost.
+     $$
+     \text{minimizar} \quad \| I_{\text{ruidosa}} - I_{\text{suavizada}} \|^2 + \lambda \| D_h I + D_v I \|^2
+     $$
 
-4. **Conjugate Gradient Solver**:
-   - The optimization problem results in a large linear system. The conjugate gradient method provides an iterative solution.
+     Donde:
+     - $I_{\text{ruidosa}}$: Imagen con ruido.
+     - $I_{\text{suavizada}}$: Imagen denoised o suavizada.
+     - $D_h$ y $D_v$: Matrices de diferencias horizontales y verticales que imponen regularización para evitar cambios bruscos entre píxeles.
+     - $\lambda$: Parámetro de regularización que controla el equilibrio entre fidelidad y suavidad.
 
-## **Features**
-- **Noise Simulation**: Adds Gaussian noise to any input grayscale image.
-- **Denoising Algorithm**: Implements regularized noise reduction using sparse matrix operations.
-- **Performance Metrics**: Computes PSNR and SSIM for objective evaluation.
-- **Visualization Tools**: Displays original, noisy, and denoised images for visual comparison.
+3. **Matrices Dispersas**:
+   - Las operaciones de diferencias finitas $D_h$, $D_v$ se representan mediante matrices dispersas, optimizando el uso de memoria y reduciendo el costo computacional.
 
-## **Dependencies**
+4. **Método de Gradiente Conjugado**:
+   - La solución del problema de optimización resulta en un sistema lineal disperso de gran tamaño.
+   - El método de gradiente conjugado, implementado en `scipy.sparse.linalg.cg`, permite resolver iterativamente este sistema de forma eficiente.
+
+## **Características del Proyecto**
+
+- **Simulación de Ruido**: Agrega ruido gaussiano a cualquier imagen de entrada en escala de grises.
+- **Algoritmo de Reducción de Ruido**: Utiliza operaciones con matrices dispersas y regularización para reducir el ruido.
+- **Métricas de Desempeño**: Calcula PSNR y SSIM para evaluar objetivamente la calidad de la imagen suavizada.
+- **Herramientas de Visualización**: Muestra las imágenes original, ruidosa y suavizada para comparación visual.
+
+## **Requisitos**
+
 - Python 3.x
-- OpenCV (`opencv-python`)
-- SciPy (`scipy`)
-- NumPy (`numpy`)
-- Scikit-image (`scikit-image`)
-- Matplotlib (`matplotlib`)
+- Librerías necesarias:
+  - OpenCV (`opencv-python`)
+  - SciPy (`scipy`)
+  - NumPy (`numpy`)
+  - Scikit-image (`scikit-image`)
+  - Matplotlib (`matplotlib`)
 
-Install dependencies using (or install the requirements from `requirements.txt`):
+Instala las dependencias ejecutando (o instalalos desde `requirements.txt`):
 ```bash
 pip install opencv-python scipy numpy scikit-image matplotlib
 ```
 
-## **Usage**
-1. Clone the repository:
+## **Cómo Funciona**
+
+El flujo principal del proyecto incluye los siguientes pasos:
+
+1. **Agregar Ruido a la Imagen**:
+   - Se genera ruido gaussiano utilizando `np.random.randn` y se agrega a una imagen en escala de grises.
+
+2. **Reducción de Ruido (Denoising)**:
+   - Se define un modelo regularizado para suavizar la imagen, resolviendo un sistema disperso con gradiente conjugado.
+   - Se utilizan matrices de diferencias horizontales y verticales para garantizar la suavidad.
+
+3. **Evaluación de la Calidad**:
+   - Se calculan las métricas PSNR y SSIM para medir la similitud entre la imagen original y la imagen suavizada.
+
+## **Instrucciones de Uso**
+
+1. Clona el repositorio:
    ```bash
    git clone https://github.com/Electromayonaise/image-denoising
    cd image-denoising
    ```
 
-2. Prepare an input image (grayscale, e.g., `cat.png`) and place it in the `data/` directory.
+2. Prepara una imagen de entrada en escala de grises (por ejemplo, `cat.png`) y colócala en el directorio `data/`.
 
-3. Run the main script:
+3. Ejecuta el script principal:
    ```bash
    python main.py
    ```
 
-4. Outputs:
-   - `cat_noisy.png`: Image with added Gaussian noise.
-   - `cat_denoised.png`: Image after denoising.
+4. Salidas generadas:
+   - `cat_noisy.png`: Imagen con ruido gaussiano.
+   - `cat_denoised.png`: Imagen después de la reducción de ruido.
 
-## **Example**
-### **Original Image**
-![Original Image](data/cat.png)
+## **Ejemplo**
 
-### **Noisy Image**
-![Noisy Image](data/cat_noisy.png)
+### **Imagen Original**
+![Imagen Original](data/cat.png)
 
-### **Denoised Image**
-![Denoised Image](data/cat_denoised.png)
+### **Imagen con Ruido**
+![Imagen con Ruido](data/cat_noisy.png)
 
-### **Performance**
-- **PSNR**: Measures how much the denoised image resembles the original.
-- **SSIM**: Evaluates perceived structural similarity.
+### **Imagen Suavizada**
+![Imagen Suavizada](data/cat_denoised.png)
 
-Example Output:
+### **Desempeño**
+- **PSNR**: Mide la similitud objetiva entre las imágenes.
+- **SSIM**: Evalúa la similitud percibida en términos de estructura.
+
+Ejemplo de salida:
 ```
 PSNR: 30.25, SSIM: 0.85
 ```
 
-## **Customization**
-- Adjust `lambda_param` in `denoise_image` to control the regularization strength.
-- Modify `noise_factor` in `add_noise` to simulate different levels of noise.
+## **Personalización**
+
+- Ajusta el parámetro `lambda_param` en la función `denoise_image` para cambiar la fuerza de regularización.
+- Modifica `noise_factor` en la función `add_noise` para simular diferentes niveles de ruido.
+
+  
 
