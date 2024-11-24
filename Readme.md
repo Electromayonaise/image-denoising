@@ -20,20 +20,18 @@ El ruido en las imágenes es un problema común, especialmente en condiciones co
 2. **Reducción de Ruido Regularizada**:
    - La reducción de ruido se formula como un problema de optimización matemática, donde se busca encontrar una imagen suavizada minimizando una función objetivo que equilibra la fidelidad a la imagen original y la suavidad:
 
-     $$
-     \text{minimizar} \quad \| I_{\text{ruidosa}} - I_{\text{suavizada}} \|^2 + \lambda \| D_h I + D_v I \|^2
-     $$
+   $$\text{minimizar} \quad \| I_{\text{ruidosa}} - I_{\text{suavizada}} \|^2 + \lambda \| D_h I + D_v I \|^2$$
 
-     Donde:
+   Donde:
      - $I_{\text{ruidosa}}$: Imagen con ruido.
      - $I_{\text{suavizada}}$: Imagen denoised o suavizada.
      - $D_h$ y $D_v$: Matrices de diferencias horizontales y verticales que imponen regularización para evitar cambios bruscos entre píxeles.
      - $\lambda$: Parámetro de regularización que controla el equilibrio entre fidelidad y suavidad.
 
-3. **Matrices Dispersas**:
+4. **Matrices Dispersas**:
    - Las operaciones de diferencias finitas $D_h$, $D_v$ se representan mediante matrices dispersas, optimizando el uso de memoria y reduciendo el costo computacional.
 
-4. **Método de Gradiente Conjugado**:
+5. **Método de Gradiente Conjugado**:
    - La solución del problema de optimización resulta en un sistema lineal disperso de gran tamaño.
    - El método de gradiente conjugado, implementado en `scipy.sparse.linalg.cg`, permite resolver iterativamente este sistema de forma eficiente.
 
