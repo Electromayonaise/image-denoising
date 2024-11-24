@@ -20,10 +20,17 @@ The process involves the following key steps:
 
 2. **Regularized Denoising**:
    - Denoising is formulated as an optimization problem:
-     $$
+
+    $$
      \text{minimize} \quad \| I_{\text{noisy}} - I_{\text{denoised}} \|^2 + \lambda \| D_h I + D_v I \|^2
-     $$
-     where $I_{\text{noisy}}$ is the noisy image, $D_h$ and $D_v$ are horizontal and vertical difference matrices, and $ \lambda $ is the regularization parameter.
+      $$
+
+   where:
+   - `I_noisy` is the noisy image.
+   - `I_denoised` is the denoised image.
+   - `D_h` and `D_v` are horizontal and vertical difference matrices.
+   - `λ` (lambda) is the regularization parameter.
+
 
 3. **Sparse Matrices**:
    - Sparse matrices efficiently represent operations like finite differences, reducing memory usage and computational cost.
