@@ -19,7 +19,7 @@ def main():
     show_image(noisy_image, title="Imagen Ruidosa")
 
     # Reducir el ruido utilizando inversión regularizada
-    denoised_image = denoise_image(noisy_image, lambda_param=5.0)
+    denoised_image = denoise_image(noisy_image, lambda_param=6.0)
 
     # Guardar la imagen denoised
     denoised_image_path = "data/cat_denoised.png"
